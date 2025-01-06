@@ -21,14 +21,16 @@ const getCategories = async (request, response) => {
 // add category to the database
 const addCategory = async (request, response) => {
   try {
-    const db = connectionDB();
-    const tasksCollection = db.collection("tasks");
     const { limit, category } = request.body;
 
     if (!limit || !category) {
       response.status(400).send("Missing required parameters");
       return;
     }
+
+    // database operation
+    const db = connectionDB();
+    const tasksCollection = db.collection("tasks");
 
     // check if category already exists
     const categoryExists = await tasksCollection.findOne({ category });
