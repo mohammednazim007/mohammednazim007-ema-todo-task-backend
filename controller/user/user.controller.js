@@ -55,14 +55,20 @@ const addCategory = async (request, response) => {
 // delete category by id
 const deleteCategory = async (request, response) => {
   try {
-    const db = connectionDB();
-    const tasksCollection = db.collection("tasks");
     const { id } = request.params;
 
+    // Validate that the provided ID is a valid ObjectId & check if the document exists
     if (!id) {
       response.status(400).send({ message: "Missing required parameter" });
     }
-    const result = await tasksCollection.deleteOne({ _id: id });
+
+    if (!ObjectId.isValid(id)) {
+      return response.status(400).send({ message: "Invalid ID format" });
+    }
+
+    const db = connectionDB();
+    const tasksCollection = db.collection("tasks");
+    const result = await tasksCollection.deleteOne({ _id: new ObjectId(id) });
 
     response.status(200).send({ message: "Task deleted successfully", result });
   } catch (err) {
@@ -74,17 +80,21 @@ const deleteCategory = async (request, response) => {
 // update category by id
 const updateCategory = async (request, response) => {
   try {
-    const db = connectionDB();
-    const tasksCollection = db.collection("tasks");
     const { id, category, limit } = request.body;
-
-    console.log("task ", tasksCollection);
-    console.log("request.body", request.body);
 
     if (!id) {
       response.status(400).send({ message: "Missing required parameter" });
       return;
     }
+
+    // Validate that the provided ID is a valid ObjectId
+    if (!ObjectId.isValid(id)) {
+      return response.status(400).send({ message: "Invalid ID format" });
+    }
+
+    // database operation
+    const db = connectionDB();
+    const tasksCollection = db.collection("tasks");
 
     const result = await tasksCollection.updateOne(
       { _id: new ObjectId(id) },
