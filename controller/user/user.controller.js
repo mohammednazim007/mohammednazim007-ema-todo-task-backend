@@ -1,5 +1,16 @@
-const addTask = (_request, response) => {
-  return response.status(200).json({ message: "user controller is ok" });
+const { connectionDB } = require("../../db/connectionDB");
+
+const addCategory = async (request, response) => {
+  try {
+    const db = connectionDB();
+    const tasksCollection = db.collection("tasks");
+    const result = await tasksCollection.insertOne(request.body);
+
+    response.status(201).send({ message: "Task added successfully", result });
+  } catch (err) {
+    console.error("Error adding task:", err);
+    response.status(500).send("Server Error");
+  }
 };
 
-module.exports = { addTask };
+module.exports = { addCategory };

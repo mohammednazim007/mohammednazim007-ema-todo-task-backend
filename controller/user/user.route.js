@@ -1,8 +1,8 @@
 const express = require("express");
-const { addTask } = require("./user.controller");
+const { addCategory } = require("./user.controller");
 const router = express.Router();
 
 // add task
-router.post("/add-task", addTask);
+router.put("/add-category", addCategory);
 
 module.exports = router;
