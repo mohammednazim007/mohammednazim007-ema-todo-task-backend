@@ -1,8 +1,15 @@
 const express = require("express");
-const { addCategory } = require("./user.controller");
+const {
+  addCategory,
+  getCategories,
+  deleteCategory,
+  updateCategory,
+} = require("./user.controller");
 const router = express.Router();
 
-// add task
+router.get("/get-categories", getCategories);
 router.put("/add-category", addCategory);
+router.patch("/update-category/:id", updateCategory);
+router.delete("/delete-category/:id", deleteCategory);
 
 module.exports = router;
