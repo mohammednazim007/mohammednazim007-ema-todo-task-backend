@@ -18,39 +18,43 @@ const getCategories = async (request, response) => {
   }
 };
 
-// add category to the database
 const addCategory = async (request, response) => {
   try {
     const { limit, category } = request.body;
 
-    if (!limit || !category) {
-      response.status(400).send("Missing required parameters");
+    // Validate parameters
+    if (
+      typeof limit !== "number" ||
+      typeof category !== "string" ||
+      category.trim() === ""
+    ) {
+      response.status(400).send("Invalid parameters");
       return;
     }
 
-    // database operation
+    // Database connection
     const db = connectionDB();
     const tasksCollection = db.collection("tasks");
 
-    // check if category already exists
+    // Check if category already exists
     const categoryExists = await tasksCollection.findOne({ category });
-
     if (categoryExists) {
       response.status(400).send({ message: "Category already exists" });
       return;
     }
 
-    // store current time in the database
+    // Format the current time
     const currentTime = new Date();
     const formattedDate = currentTime.toISOString().split("T")[0];
-    request.body.createdAt = formattedDate;
 
-    const result = await tasksCollection.insertOne(request.body);
+    // Create a new task
+    const newTask = { limit, category, createdAt: formattedDate };
+    const result = await tasksCollection.insertOne(newTask);
 
     response.status(201).send({ message: "Task added successfully", result });
   } catch (err) {
     console.error("Error adding task:", err);
-    response.status(500).send("Server Error");
+    response.status(500).send({ message: "Server Error", error: err.message });
   }
 };
 
