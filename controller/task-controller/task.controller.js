@@ -69,20 +69,17 @@ const dailyTask = async (req, res) => {
         { $group: { _id: null, totalAmount: { $sum: "$amount" } } }, // Sum the "amount" field
       ])
       .toArray();
-    console.log("totalAmountForCategory", totalAmountForCategory);
 
     const currentTotalAmount = totalAmountForCategory[0]?.totalAmount || 0;
 
-    console.log("currentTotalAmount", currentTotalAmount);
-
     // Check if the new task would exceed the limit
     if (currentTotalAmount + amount > totalLimit) {
-      return res
-        .status(400)
-        .json({ message: "Cannot add task, total limit exceeded" });
+      return res.status(400).json({
+        message: "Cannot add task, total limit exceeded",
+        currentTotalAmount,
+        totalLimit,
+      });
     }
-
-    console.log("Current Total Amount:", currentTotalAmount);
 
     // Insert the new task if within the limit
     const task = await usersCollection.insertOne({
