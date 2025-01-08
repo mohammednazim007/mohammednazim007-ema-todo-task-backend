@@ -7,7 +7,7 @@ let db; // To store the database instance
 
 const CONNECT_WITH_DB = async () => {
   try {
-    const client = new MongoClient(process.env.MONGO_DB_URI); // Use the URI from the .env file
+    const client = new MongoClient(process.env.MONGO_DB_URI);
     await client.connect();
     console.log("Connected to MongoDB Atlas");
     db = client.db("task-todo"); // Set the database instance
