@@ -82,7 +82,8 @@ const deleteCategory = async (request, response) => {
 // update category by id
 const updateCategory = async (request, response) => {
   try {
-    const { id, category, limit } = request.body;
+    const { id } = request.params;
+    const { category, limit } = request.body;
 
     if (!id) {
       response.status(400).send({ message: "Missing required parameter" });
