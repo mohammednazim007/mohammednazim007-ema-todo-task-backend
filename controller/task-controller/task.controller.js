@@ -109,9 +109,6 @@ const filterTasksById = async (req, res) => {
         .json({ message: "No tasks found for this category" });
     }
 
-    console.log("tasks", tasks);
-    console.log("categoryId", id);
-
     res.status(200).json({ message: "Tasks fetched successfully", tasks });
   } catch (err) {
     console.error(err);
