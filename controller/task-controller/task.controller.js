@@ -32,7 +32,7 @@ const dailyTask = async (req, res) => {
     // Check if the new task would exceed the limit
     if (currentTotalAmount + amount > totalLimit) {
       return res.status(400).json({
-        message: "Cannot add task, total limit exceeded",
+        message: `Total limit exceeded ${totalLimit || 0}`,
         currentTotalAmount,
         totalLimit,
       });
@@ -42,7 +42,7 @@ const dailyTask = async (req, res) => {
     const task = await usersCollection.insertOne({
       amount,
       purpose,
-      categoryId,
+      category,
       createdAt: new Date().toISOString().split("T")[0], // Store only the date
     });
 
