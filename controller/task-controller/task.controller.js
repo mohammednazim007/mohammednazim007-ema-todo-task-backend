@@ -109,7 +109,26 @@ const filterTasksById = async (req, res) => {
         .json({ message: "No tasks found for this category" });
     }
 
-    res.status(200).json({ message: "Tasks fetched successfully", tasks });
+    // sum total price of all tasks
+    const totalPrice = await tasksCollection
+      .aggregate([
+        {
+          $match: { categoryId: new ObjectId(id) },
+        },
+        {
+          $group: {
+            _id: null,
+            totalPrice: { $sum: "$amount" },
+          },
+        },
+      ])
+      .toArray();
+
+    res.status(200).json({
+      message: "Tasks fetched successfully",
+      totalPrice: totalPrice[0].totalPrice,
+      tasks,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error" });
