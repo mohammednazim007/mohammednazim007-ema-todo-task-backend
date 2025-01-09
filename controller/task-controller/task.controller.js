@@ -1,8 +1,7 @@
-const { ObjectId } = require("mongodb");
 const { connectionDB } = require("../../db/connectionDB");
 
 const dailyTask = async (req, res) => {
-  const { amount, purpose, categoryId } = req.body;
+  const { amount, purpose, category } = req.body;
 
   const db = connectionDB();
   const tasksCollection = db.collection("tasks");
@@ -11,7 +10,7 @@ const dailyTask = async (req, res) => {
   try {
     // Fetch the category details from tasksCollection
     const singleCategory = await tasksCollection.findOne({
-      _id: new ObjectId(categoryId),
+      category,
     });
 
     if (!singleCategory) {
@@ -20,10 +19,10 @@ const dailyTask = async (req, res) => {
 
     const totalLimit = singleCategory.limit;
 
-    // Calculate the total amount for the given categoryId in usersCollection
+    // Calculate the total amount for the given category in usersCollection
     const totalAmountForCategory = await usersCollection
       .aggregate([
-        { $match: { categoryId } }, // Match documents by categoryId
+        { $match: { category } }, // Match documents by categoryId
         { $group: { _id: null, totalAmount: { $sum: "$amount" } } }, // Sum the "amount" field
       ])
       .toArray();
