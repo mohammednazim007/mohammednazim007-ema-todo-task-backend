@@ -12,6 +12,8 @@ const getCategories = async (request, response) => {
     response
       .status(200)
       .send({ message: "Categories retrieved successfully", result });
+
+    console.log("category", result);
   } catch (err) {
     console.error("Error retrieving categories:", err);
     response.status(500).send("Server Error");
