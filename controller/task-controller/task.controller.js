@@ -29,10 +29,11 @@ const dailyTask = async (req, res) => {
       ])
       .toArray();
 
-    const currentTotalAmount = totalAmountForCategory[0]?.totalAmount || 0;
+    const currentTotalAmount =
+      totalAmountForCategory[0]?.totalAmount + amount || 0;
 
     // Check if the new task would exceed the limit
-    if (currentTotalAmount + amount > totalLimit) {
+    if (currentTotalAmount > totalLimit) {
       return res.status(400).json({
         message: `Total limit exceeded ( ${totalLimit || 0} )`,
         currentTotalAmount,
@@ -53,8 +54,6 @@ const dailyTask = async (req, res) => {
       message: "Task created successfully",
       taskId: task.insertedId,
     });
-
-    console.log("single category", singleCategory);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error" });
@@ -62,31 +61,6 @@ const dailyTask = async (req, res) => {
 };
 
 // filter the tasks by category
-// const filterTasksByCategory = async (req, res) => {
-//   const { categoryId } = req.query;
-//   const { id } = req.params;
-//   const db = connectionDB();
-//   const tasksCollection = db.collection("users_daily_task");
-
-//   try {
-//     const tasks = await tasksCollection.find({ categoryId: id }).toArray();
-
-//     if (!tasks) {
-//       return res
-//         .status(404)
-//         .json({ message: "No tasks found for this category" });
-//     }
-
-//     console.log("tasks", tasks);
-//     console.log("categoryId", id);
-
-//     res.status(200).json({ message: "Tasks fetched successfully", tasks });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
-
 const filterTasksById = async (req, res) => {
   const { id } = req.params; // Extract the `id` parameter from the request.
   const db = connectionDB();
@@ -135,4 +109,36 @@ const filterTasksById = async (req, res) => {
   }
 };
 
-module.exports = { dailyTask, filterTasksById };
+// delete task by id
+const deleteTaskById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate that the provided ID is a valid ObjectId & check if the document exists
+    if (!id) {
+      res.status(400).json({ message: "Missing required parameter" });
+    }
+
+    // Validate that the provided ID is a valid ObjectId
+    if (!ObjectId.isValid(id)) {
+      res.status(400).json({ message: "Invalid ID format" });
+    }
+
+    // Database connection
+    const db = connectionDB();
+    const tasksCollection = db.collection("users_daily_task");
+
+    // database operation
+    const result = await tasksCollection.deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 0) {
+      res.status(404).json({ message: "Task not found" });
+    }
+
+    res.status(200).json({ message: "Task deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting task:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+module.exports = { dailyTask, filterTasksById, deleteTaskById };
