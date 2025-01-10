@@ -1,16 +1,34 @@
-require("dotenv").config("../.env");
+// require("dotenv").config("../.env");
+// const express = require("express");
+// const middleware = require("./middleware");
+// const router = require("./router");
+// const { notFoundHandler, errorHandler } = require("./error");
+
+// const app = express();
+
+// app.use(middleware);
+// app.use(router);
+
+// // global error handler
+// app.use(notFoundHandler);
+// app.use(errorHandler);
+
+// module.exports = app;
 const express = require("express");
-const middleware = require("./middleware");
-const router = require("./router");
-const { notFoundHandler, errorHandler } = require("./error");
+const cors = require("cors");
+const morgan = require("morgan");
 
-const app = express();
+// CORS configuration
+const corsOptions = {
+  origin: "http://localhost:3000", // Allow requests only from your frontend
+  methods: "GET,POST,PUT,DELETE", // Allowed HTTP methods
+  allowedHeaders: "Content-Type,Authorization", // Allowed headers
+};
 
-app.use(middleware);
-app.use(router);
+const middleware = [
+  morgan("dev"),
+  cors(corsOptions), // Apply CORS with options
+  express.json(), // Parse incoming JSON requests
+];
 
-// global error handler
-app.use(notFoundHandler);
-app.use(errorHandler);
-
-module.exports = app;
+module.exports = middleware;
