@@ -4,7 +4,7 @@ const express = require("express");
 
 // Define the CORS options
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*", // Allow all origins
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"], // Include required headers
   credentials: true,
