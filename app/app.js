@@ -7,7 +7,7 @@ const { notFoundHandler, errorHandler } = require("./error");
 const app = express();
 
 app.use(middleware);
-app.use(router);
+app.use("/api/v1", router);
 
 // global error handler
 app.use(notFoundHandler);
