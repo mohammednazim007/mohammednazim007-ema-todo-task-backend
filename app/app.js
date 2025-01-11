@@ -13,7 +13,7 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(corsOptions);
+app.use(require("cors")(corsOptions));
 app.use(middleware);
 app.use(router);
 
