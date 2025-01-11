@@ -6,14 +6,6 @@ const { notFoundHandler, errorHandler } = require("./error");
 
 const app = express();
 
-const corsOptions = {
-  origin: "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-};
-
-app.use(require("cors")(corsOptions));
 app.use(middleware);
 app.use(router);
 
