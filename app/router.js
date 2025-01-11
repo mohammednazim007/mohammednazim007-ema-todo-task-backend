@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const userRouter = require("../controller/user/user.route");
 const taskRouter = require("../controller/task-controller/task.route");
-const { getCategories } = require("../controller/user/user.controller");
 
 router.use("/api/v1/tasks", userRouter);
 router.use("/api/v1/users", taskRouter);
